@@ -8,9 +8,12 @@ public class Teleop {
     private RobotMap robotMap;
     private OI joysticks;
     private Shooter shooter;
+    private Vision vision;
     private boolean autoShoot = true;
     private boolean shooterDone = true;
     private boolean punchDone = true;
+
+    private boolean visionActive = false;
 
     /*UltrasonicCode
     private Ultrasonics ultrasonics;
@@ -24,10 +27,14 @@ public class Teleop {
         intake = new Intake(robotMap.getHatchIntake(), robotMap.getHatchPunch());
         elevator = new Elevator(robotMap);
         shooter = new Shooter(robotMap);
+        vision = new Vision();
     }
     public void teleopInit() {
         //intake.hatchOff();
         shooter.shooterInit();
+        // Disable Vision Processing on Limelight
+        vision.setDriverMode();
+        vision.ledOff();
     }
 
     public void TeleopPeriodic() {
@@ -39,6 +46,15 @@ public class Teleop {
         }
 
         if(!elevator.getClimbing()) {
+
+            if(joysticks.getVisionButton()){
+                visionActive = !visionActive;
+            }
+
+            if(visionActive){
+                // TODO: Do stuff
+            }
+
             driveTrain.arcadeDrive(joysticks.getXSpeed() * driveTrain.getMaxStraightSpeed(), joysticks.getZRotation() * driveTrain.getMaxTurnSpeed());
             //speed limiters
 

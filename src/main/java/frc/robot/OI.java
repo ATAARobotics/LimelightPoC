@@ -19,6 +19,7 @@ class OI {
     private boolean manualFrontUp;
     private boolean manualDrive;
     private double manualRearDown;
+    private boolean visionButton;
 
     //Gunner variables
     private Joystick gunnerStick = new Joystick(1);
@@ -42,20 +43,7 @@ class OI {
     public void checkInputs() {
         //switch statement to detirmine controls for the driver
         switch (driverScheme) {
-            case "Default":
-                XSpeed = driveStick.getY(Hand.kLeft);
-                ZRotation = -driveStick.getX(Hand.kRight);
-                gearShift = driveStick.getXButtonReleased();
-                slow = driveStick.getAButtonReleased();
-                autoClimbPressed = driveStick.getTriggerAxis(Hand.kRight);
-                manualClimbLift = driveStick.getTriggerAxis(Hand.kLeft);
-                manualFrontUp = driveStick.getBumper(Hand.kLeft);
-                manualRearUp = driveStick.getBumper(Hand.kRight);
-                manualDrive = driveStick.getYButton();
-                manualControlSandstorm = driveStick.getBButtonReleased();
-                manualRearDown = driveStick.getTriggerAxis(Hand.kRight);
-                break;
-            
+
             case "Reverse Turning":
                 XSpeed = -driveStick.getY(Hand.kLeft);
                 ZRotation = driveStick.getX(Hand.kRight);
@@ -82,6 +70,7 @@ class OI {
                 manualDrive = driveStick.getYButton();
                 manualControlSandstorm = driveStick.getBButtonReleased();
                 manualRearDown = driveStick.getTriggerAxis(Hand.kRight);
+                visionButton = driveStick.getBackButtonReleased();
                 break;
         }
         
@@ -238,6 +227,8 @@ class OI {
     public boolean manualControlSandstorm() {
         return manualControlSandstorm;
     }
+
+    public boolean getVisionButton() { return visionButton; }
 
     //Custom function to allow triggers to act as buttons
     private boolean buttonPressed(double triggerValue, String trigger) {
