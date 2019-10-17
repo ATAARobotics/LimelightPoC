@@ -1,4 +1,6 @@
 package frc.robot;
+import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.command.PIDSubsystem;
 
 public class Teleop {
     // Vairables for robot classes
@@ -52,7 +54,7 @@ public class Teleop {
             }
 
             if(visionActive){
-                // TODO: Do stuff
+                
             }
 
             driveTrain.arcadeDrive(joysticks.getXSpeed() * driveTrain.getMaxStraightSpeed(), joysticks.getZRotation() * driveTrain.getMaxTurnSpeed());
