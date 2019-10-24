@@ -1,13 +1,7 @@
 package frc.robot;
 
-import java.sql.Driver;
-
-import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 
 public class Teleop {
     // Vairables for robot classes
@@ -62,8 +56,7 @@ public class Teleop {
         visionAlignPID.setOutputRange(-1,1);
         visionAlignPID.setInputRange(-27, 27);
         // Disable Vision Processing on Limelight
-        vision.setDriverMode();
-        vision.ledOff();
+        vision.setCameraMode(CMode.Drive);
     }
 
     public void TeleopPeriodic() {
@@ -80,17 +73,15 @@ public class Teleop {
             }
             if(visionActive){
                 if(!PIDEnabled){
-                    vision.setVisionMode();
-                    vision.ledOn();
+                    vision.setCameraMode(CMode.Vision);
                     startAlignPID();
                     System.out.println("Vision Runs");
                 }
 
             }else{
                 if(PIDEnabled){
-                    stopAlignPID();
-                    vision.setDriverMode();
-                    vision.ledOff();
+                    stopAlignPID();;
+                    vision.setCameraMode(CMode.Drive);
                 }
                 driveTrain.arcadeDrive(joysticks.getXSpeed() * driveTrain.getMaxStraightSpeed(), joysticks.getZRotation() * driveTrain.getMaxTurnSpeed());
                 //speed limiters

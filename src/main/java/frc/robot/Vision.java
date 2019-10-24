@@ -3,12 +3,11 @@ package frc.robot;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.command.PIDSubsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Vision {
 
-    NetworkTable table;
+    private NetworkTable table;
+
     NetworkTableEntry tv;
     NetworkTableEntry tx;
     NetworkTableEntry ty;
@@ -69,14 +68,38 @@ public class Vision {
         ledMode.setDouble(2);
     }
 
+    // Switch LimeLight between different modes
+    public void setCameraMode(CMode mode){
+        switch (mode){
+            //Drive Mode
+            case Drive:
+                camMode.setDouble(1);
+                ledMode.setDouble(1);
+                break;
+            //Vision Mode
+            case Vision:
+                camMode.setDouble(0);
+                camMode.setDouble(3);
+                break;
+        }
+    }
+
+    @Deprecated
     public void setDriverMode(){
         // Set Camera to Driver Mode
         camMode.setDouble(1);
     }
 
+    @Deprecated
     public void setVisionMode(){
         // Set Camera to Vision Mode
         camMode.setDouble(0);
     }
         
+}
+
+// Different Camera Modes for setCameraMode method
+enum CMode{
+    Drive,
+    Vision;
 }
