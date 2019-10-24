@@ -3,6 +3,9 @@ package frc.robot;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.command.PIDSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Vision {
 
     NetworkTable table;
@@ -14,15 +17,16 @@ public class Vision {
     NetworkTableEntry camMode;
 
     public Vision(){
-        table = NetworkTableInstance.getDefault().getTable("limelight");
+        table = NetworkTableInstance.getDefault().getTable("limelight-swat");
         tv = table.getEntry("tv");
         tx = table.getEntry("tx");
         ty = table.getEntry("ty");
         ta = table.getEntry("ta");
         ledMode =  table.getEntry("ledMode");
         camMode = table.getEntry("camMode");
+        
     }
-
+    
     public double getTv(){
         // Return Target Valid Status
         return tv.getDouble(2);
@@ -31,6 +35,8 @@ public class Vision {
     public double getTx(){
         // Return Target X
         return tx.getDouble(0);
+        //return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+
     }
 
     public double getTy(){
@@ -72,5 +78,5 @@ public class Vision {
         // Set Camera to Vision Mode
         camMode.setDouble(0);
     }
-
+        
 }
