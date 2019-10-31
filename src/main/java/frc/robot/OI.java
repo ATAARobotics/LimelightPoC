@@ -108,19 +108,11 @@ class OI {
                 autoShoot = gunnerStick.getRawButtonReleased(2);
                 break;   
         }
-        SmartDashboard.putBoolean("Hatch Open", hatchOpen);
-        SmartDashboard.putBoolean("Hatch Closed", hatchClosed);
         SmartDashboard.putBoolean("Forward Direction", YDirection);
         SmartDashboard.putBoolean("Turn Direction", XDirection);
         //set button input of trigger for autoClimb
         autoClimb = buttonPressed(autoClimbPressed, "right");
 
-    }
-    public void updateFromShuffleData(){
-        hatchOpen = SmartDashboard.getBoolean("Hatch Open", hatchOpen);
-        YDirection = SmartDashboard.getBoolean("Forward Direction", YDirection);
-        XDirection = SmartDashboard.getBoolean("Turn Direction", XDirection);
-        hatchClosed = SmartDashboard.getBoolean("Hatch Closed", hatchClosed);
     }
 
     //Getter functions for controls

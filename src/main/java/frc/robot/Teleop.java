@@ -41,7 +41,6 @@ public class Teleop {
         vision = new Vision();
     }
     public void teleopInit() {
-        joysticks.checkInputs();
         //intake.hatchOff();
         shooter.shooterInit();
         //Sets up PID
@@ -66,8 +65,8 @@ public class Teleop {
     }
 
     public void TeleopPeriodic() {
+        joysticks.checkInputs();
         driveTrain.updateFromShuffleData();
-        joysticks.updateFromShuffleData();
         updateFromShuffleData();
         visionAlignPID.setAbsoluteTolerance(tolerance);
 
@@ -206,7 +205,7 @@ public class Teleop {
         }
         if (visionAlignPID.onTarget()) {
             visionAlignPID.disable();
-            visionAlignPID.free();
+            visionAlignPID.close();
             aligning = true;
             return (true);
         } else {
