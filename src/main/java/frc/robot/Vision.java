@@ -79,7 +79,7 @@ public class Vision {
             //Vision Mode
             case Vision:
                 camMode.setDouble(0);
-                camMode.setDouble(3);
+                ledMode.setDouble(3);
                 break;
         }
     }

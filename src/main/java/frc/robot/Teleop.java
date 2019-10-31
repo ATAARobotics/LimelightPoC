@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Teleop {
     // Vairables for robot classes
@@ -20,6 +21,10 @@ public class Teleop {
     public boolean aligning = false;
     private PIDSubsystem visionAlignPID;
     private boolean visionActive = false;
+    private double P = 0.035;
+    private double I = 0.002;
+    private double D = 0.0;
+    private double tolerance = 0.1;
 
     /*UltrasonicCode
     private Ultrasonics ultrasonics;
@@ -36,11 +41,11 @@ public class Teleop {
         vision = new Vision();
     }
     public void teleopInit() {
-
+        joysticks.checkInputs();
         //intake.hatchOff();
         shooter.shooterInit();
         //Sets up PID
-        visionAlignPID = new PIDSubsystem("AlignPID", 0.035, 0.002, 0.0) {
+        visionAlignPID = new PIDSubsystem("AlignPID", P, I, D) {
             @Override
             protected double returnPIDInput() {return vision.getTx(); }
             @Override
@@ -50,17 +55,22 @@ public class Teleop {
             @Override
             protected void initDefaultCommand() { }
             };
-
-        visionAlignPID.setAbsoluteTolerance(0.1);
+        
+        visionAlignPID.setAbsoluteTolerance(tolerance);
         visionAlignPID.getPIDController().setContinuous(false);
         visionAlignPID.setOutputRange(-1,1);
         visionAlignPID.setInputRange(-27, 27);
         // Disable Vision Processing on Limelight
         vision.setCameraMode(CMode.Drive);
+        SmartDashboard.putNumber("Tolerance", tolerance);
     }
 
     public void TeleopPeriodic() {
-        joysticks.checkInputs();
+        driveTrain.updateFromShuffleData();
+        joysticks.updateFromShuffleData();
+        updateFromShuffleData();
+        visionAlignPID.setAbsoluteTolerance(tolerance);
+
         //drive
         if(joysticks.autoClimbPressed()) {
             elevator.setAutoClimb();
@@ -203,6 +213,9 @@ public class Teleop {
             aligning = false;
             return (false);
         }
+    }
+    public void updateFromShuffleData(){
+        tolerance = SmartDashboard.getNumber("Tolerance", tolerance);
     }
 
  
