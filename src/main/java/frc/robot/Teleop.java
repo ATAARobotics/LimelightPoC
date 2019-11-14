@@ -21,9 +21,9 @@ public class Teleop {
     public boolean aligning = false;
     private PIDSubsystem visionAlignPID;
     private boolean visionActive = false;
-    private double P = 0.035;
-    private double I = 0.002;
-    private double D = 0.0;
+    private double P = 0.05;
+    private double I = 0.0026;
+    private double D = 0.05;
     private double tolerance = 0.1;
 
     /*UltrasonicCode
@@ -198,6 +198,7 @@ public class Teleop {
     public void stopAlignPID() {
         visionAlignPID.disable();
         PIDEnabled = false;
+        
     }
     public boolean alignDrive(){
         if (vision.getTv() == 0) {
