@@ -19,12 +19,13 @@ public class Teleop {
 
     public boolean PIDEnabled = false;
     public boolean aligning = false;
+    private int onTargetCounter = 0;
     private PIDSubsystem visionAlignPID;
     private boolean visionActive = false;
     private double P = 0.05;
     private double I = 0.0026;
     private double D = 0.05;
-    private double tolerance = 0.1;
+    private double tolerance = 0.2;
 
     /*UltrasonicCode
     private Ultrasonics ultrasonics;
@@ -49,7 +50,7 @@ public class Teleop {
             protected double returnPIDInput() {return vision.getTx(); }
             @Override
             protected void usePIDOutput(double output) { drive(0, output, true);
-                DriverStation.reportError("Vision Running " + output, true);
+                //DriverStation.reportWarning("Vision Running " + output, true);
             }
             @Override
             protected void initDefaultCommand() { }
@@ -62,6 +63,7 @@ public class Teleop {
         // Disable Vision Processing on Limelight
         vision.setCameraMode(CMode.Drive);
         SmartDashboard.putNumber("Tolerance", tolerance);
+        SmartDashboard.putNumber("Setpoint", visionAlignPID.getSetpoint());
     }
 
     public void TeleopPeriodic() {
@@ -79,17 +81,32 @@ public class Teleop {
 
             if(joysticks.getVisionButton()){
                 visionActive = !visionActive;
-            }
-            if(visionActive){
-                if(!PIDEnabled){
-                    vision.setCameraMode(CMode.Vision);
-                    startAlignPID();
-                    System.out.println("Vision Runs");
+                if (visionActive) {
+                    onTargetCounter = 0;
                 }
-
+            }
+            //TODO: Make it drive forward once aligned?
+            if(visionActive){
+                if(PIDEnabled && visionAlignPID.onTarget() == true){
+                    DriverStation.reportWarning("On target", false);
+                    onTargetCounter++;
+                    if (onTargetCounter > 10) {
+                        stopAlignPID();
+                        vision.setCameraMode(CMode.Drive);
+                        visionActive = false;
+                    }
+                }else{
+                    //onTargetCounter = 0;
+                    DriverStation.reportWarning("Not on target", false);
+                    if(!PIDEnabled){
+                        vision.setCameraMode(CMode.Vision);
+                        startAlignPID();
+                        System.out.println("Vision Runs");
+                    }
+                }
             }else{
                 if(PIDEnabled){
-                    stopAlignPID();;
+                    stopAlignPID();
                     vision.setCameraMode(CMode.Drive);
                 }
                 driveTrain.arcadeDrive(joysticks.getXSpeed() * driveTrain.getMaxStraightSpeed(), joysticks.getZRotation() * driveTrain.getMaxTurnSpeed());
@@ -200,6 +217,7 @@ public class Teleop {
         PIDEnabled = false;
         
     }
+    //TODO: Does this have any purpose whatsoever? Is it meant to be called?
     public boolean alignDrive(){
         if (vision.getTv() == 0) {
             DriverStation.reportError("Unable to locate more than 1 target", true);
@@ -207,11 +225,11 @@ public class Teleop {
         if (visionAlignPID.onTarget()) {
             visionAlignPID.disable();
             visionAlignPID.close();
-            aligning = true;
-            return (true);
-        } else {
             aligning = false;
             return (false);
+        } else {
+            aligning = true;
+            return (true);
         }
     }
     public void updateFromShuffleData(){
