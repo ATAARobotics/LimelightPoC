@@ -79,14 +79,14 @@ public class Teleop {
 
         if(!elevator.getClimbing()) {
 
-            if(joysticks.getVisionButton()){
+            if(joysticks.getVisionButton()) {
                 visionActive = !visionActive;
                 if (visionActive) {
                     onTargetCounter = 0;
                 }
             }
             //TODO: Make it drive forward once aligned?
-            if(visionActive){
+            if(visionActive) {
                 if(PIDEnabled && visionAlignPID.onTarget() == true){
                     DriverStation.reportWarning("On target", false);
                     onTargetCounter++;
@@ -95,7 +95,7 @@ public class Teleop {
                         vision.setCameraMode(CMode.Drive);
                         visionActive = false;
                     }
-                }else{
+                } else {
                     //onTargetCounter = 0;
                     DriverStation.reportWarning("Not on target", false);
                     if(!PIDEnabled){
@@ -216,21 +216,6 @@ public class Teleop {
         visionAlignPID.disable();
         PIDEnabled = false;
         
-    }
-    //TODO: Does this have any purpose whatsoever? Is it meant to be called?
-    public boolean alignDrive(){
-        if (vision.getTv() == 0) {
-            DriverStation.reportError("Unable to locate more than 1 target", true);
-        }
-        if (visionAlignPID.onTarget()) {
-            visionAlignPID.disable();
-            visionAlignPID.close();
-            aligning = false;
-            return (false);
-        } else {
-            aligning = true;
-            return (true);
-        }
     }
     public void updateFromShuffleData(){
         tolerance = SmartDashboard.getNumber("Tolerance", tolerance);
