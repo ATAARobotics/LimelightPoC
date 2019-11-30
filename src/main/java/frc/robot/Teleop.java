@@ -85,11 +85,16 @@ public class Teleop {
                     onTargetCounter = 0;
                 }
             }
-            //TODO: Make it drive forward once aligned?
+            //TODO: Make it drive forward once aligned to target
+
+            // Vision Alignment
             if(visionActive) {
-                if(PIDEnabled && visionAlignPID.onTarget() == true){
+
+                // Disable Vision if Aligned
+                if(PIDEnabled && visionAlignPID.onTarget()){
                     DriverStation.reportWarning("On target", false);
                     onTargetCounter++;
+                    // Once has been on target for 10 counts: Disable PID, Reset Camera Settings
                     if (onTargetCounter > 10) {
                         stopAlignPID();
                         vision.setCameraMode(CMode.Drive);
@@ -98,17 +103,22 @@ public class Teleop {
                 } else {
                     //onTargetCounter = 0;
                     DriverStation.reportWarning("Not on target", false);
+                    // Start PID if not started already, vision is enabled, and not aligned
                     if(!PIDEnabled){
                         vision.setCameraMode(CMode.Vision);
                         startAlignPID();
                         System.out.println("Vision Runs");
                     }
                 }
+            // If Vision is disabled normal driving and control operations. (AKA Mainly not vision code)
             }else{
+                // If PID is enabled but vision is disabled stop vision alignment PID and reset camera settings
                 if(PIDEnabled){
                     stopAlignPID();
                     vision.setCameraMode(CMode.Drive);
                 }
+
+                // Normal Driving and Operation controls
                 driveTrain.arcadeDrive(joysticks.getXSpeed() * driveTrain.getMaxStraightSpeed(), joysticks.getZRotation() * driveTrain.getMaxTurnSpeed());
                 //speed limiters
 
@@ -118,8 +128,8 @@ public class Teleop {
                 if (joysticks.getSlow()) {
                     driveTrain.slow();
                 }
-                else; 
-            
+                else;
+
 
                 //hatch control
                 if (joysticks.getHatchOpen()) {
@@ -203,23 +213,28 @@ public class Teleop {
 	public void TestPeriodic() {
         joysticks.checkInputs();
     }
-     //Alignment PID Commands
+
+    // -- Vision: --
+    // Start alignment PID
      private Double angleGoal;
     public void startAlignPID() {
-        angleGoal = 0.0;
-        visionAlignPID.setSetpoint(angleGoal);
+        visionAlignPID.setSetpoint(0.0);
         visionAlignPID.enable();
         PIDEnabled = true;
     }
 
+    // Stop Alignment PID
     public void stopAlignPID() {
         visionAlignPID.disable();
         PIDEnabled = false;
         
     }
+    // Update tolerance for Vision PID from shuffleboard
     public void updateFromShuffleData(){
         tolerance = SmartDashboard.getNumber("Tolerance", tolerance);
     }
+
+    // -- End Vision --
 
  
 }
