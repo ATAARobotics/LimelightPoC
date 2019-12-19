@@ -3,6 +3,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.vision.CameraMode;
+import frc.robot.vision.LimeLight;
 
 public class Teleop {
     // Vairables for robot classes
@@ -12,7 +14,7 @@ public class Teleop {
     private RobotMap robotMap;
     private OI joysticks;
     private Shooter shooter;
-    private Vision vision;
+    private LimeLight limeLight;
     private boolean autoShoot = true;
     private boolean shooterDone = true;
     private boolean punchDone = true;
@@ -39,7 +41,7 @@ public class Teleop {
         intake = new Intake(robotMap.getHatchIntake(), robotMap.getHatchPunch());
         elevator = new Elevator(robotMap);
         shooter = new Shooter(robotMap);
-        vision = new Vision();
+        limeLight = new LimeLight();
     }
     public void teleopInit() {
         //intake.hatchOff();
@@ -47,7 +49,7 @@ public class Teleop {
         //Sets up PID
         visionAlignPID = new PIDSubsystem("AlignPID", P, I, D) {
             @Override
-            protected double returnPIDInput() {return vision.getTx(); }
+            protected double returnPIDInput() {return limeLight.getTx(); }
             @Override
             protected void usePIDOutput(double output) { drive(0, output, true);
                 //DriverStation.reportWarning("Vision Running " + output, true);
@@ -61,7 +63,7 @@ public class Teleop {
         visionAlignPID.setOutputRange(-1,1);
         visionAlignPID.setInputRange(-27, 27);
         // Disable Vision Processing on Limelight
-        vision.setCameraMode(CMode.Drive);
+        limeLight.setCameraMode(CameraMode.Drive);
         SmartDashboard.putNumber("Tolerance", tolerance);
         SmartDashboard.putNumber("Setpoint", visionAlignPID.getSetpoint());
     }
@@ -97,7 +99,7 @@ public class Teleop {
                     // Once has been on target for 10 counts: Disable PID, Reset Camera Settings
                     if (onTargetCounter > 10) {
                         stopAlignPID();
-                        vision.setCameraMode(CMode.Drive);
+                        limeLight.setCameraMode(CameraMode.Drive);
                         visionActive = false;
                     }
                 } else {
@@ -105,7 +107,7 @@ public class Teleop {
                     DriverStation.reportWarning("Not on target", false);
                     // Start PID if not started already, vision is enabled, and not aligned
                     if(!PIDEnabled){
-                        vision.setCameraMode(CMode.Vision);
+                        limeLight.setCameraMode(CameraMode.Vision);
                         startAlignPID();
                         System.out.println("Vision Runs");
                     }
@@ -115,7 +117,7 @@ public class Teleop {
                 // If PID is enabled but vision is disabled stop vision alignment PID and reset camera settings
                 if(PIDEnabled){
                     stopAlignPID();
-                    vision.setCameraMode(CMode.Drive);
+                    limeLight.setCameraMode(CameraMode.Drive);
                 }
 
                 // Normal Driving and Operation controls

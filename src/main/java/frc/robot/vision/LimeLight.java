@@ -1,10 +1,10 @@
-package frc.robot;
+package frc.robot.vision;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class Vision {
+public class LimeLight {
 
     private NetworkTable table;
 
@@ -15,7 +15,7 @@ public class Vision {
     NetworkTableEntry ledMode;
     NetworkTableEntry camMode;
 
-    public Vision(){
+    public LimeLight(){
         table = NetworkTableInstance.getDefault().getTable("limelight-swat");
         tv = table.getEntry("tv");
         tx = table.getEntry("tx");
@@ -69,7 +69,7 @@ public class Vision {
     }
 
     // Switch LimeLight between different modes
-    public void setCameraMode(CMode mode) {
+    public void setCameraMode(CameraMode mode) {
         switch (mode) {
             //Drive Mode
             case Drive:
@@ -86,8 +86,3 @@ public class Vision {
         
 }
 
-// Different Camera Modes for setCameraMode method
-enum CMode{
-    Drive,
-    Vision;
-}
