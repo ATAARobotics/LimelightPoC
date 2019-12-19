@@ -3,7 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.vision.CMode;
+import frc.robot.vision.CameraMode;
 import frc.robot.vision.LimeLight;
 
 public class Teleop {
@@ -63,7 +63,7 @@ public class Teleop {
         visionAlignPID.setOutputRange(-1,1);
         visionAlignPID.setInputRange(-27, 27);
         // Disable Vision Processing on Limelight
-        limeLight.setCameraMode(CMode.Drive);
+        limeLight.setCameraMode(CameraMode.Drive);
         SmartDashboard.putNumber("Tolerance", tolerance);
         SmartDashboard.putNumber("Setpoint", visionAlignPID.getSetpoint());
     }
@@ -99,7 +99,7 @@ public class Teleop {
                     // Once has been on target for 10 counts: Disable PID, Reset Camera Settings
                     if (onTargetCounter > 10) {
                         stopAlignPID();
-                        limeLight.setCameraMode(CMode.Drive);
+                        limeLight.setCameraMode(CameraMode.Drive);
                         visionActive = false;
                     }
                 } else {
@@ -107,7 +107,7 @@ public class Teleop {
                     DriverStation.reportWarning("Not on target", false);
                     // Start PID if not started already, vision is enabled, and not aligned
                     if(!PIDEnabled){
-                        limeLight.setCameraMode(CMode.Vision);
+                        limeLight.setCameraMode(CameraMode.Vision);
                         startAlignPID();
                         System.out.println("Vision Runs");
                     }
@@ -117,7 +117,7 @@ public class Teleop {
                 // If PID is enabled but vision is disabled stop vision alignment PID and reset camera settings
                 if(PIDEnabled){
                     stopAlignPID();
-                    limeLight.setCameraMode(CMode.Drive);
+                    limeLight.setCameraMode(CameraMode.Drive);
                 }
 
                 // Normal Driving and Operation controls

@@ -69,7 +69,7 @@ public class LimeLight {
     }
 
     // Switch LimeLight between different modes
-    public void setCameraMode(CMode mode) {
+    public void setCameraMode(CameraMode mode) {
         switch (mode) {
             //Drive Mode
             case Drive:
