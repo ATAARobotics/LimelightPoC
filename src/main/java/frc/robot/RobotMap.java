@@ -58,6 +58,7 @@ public class RobotMap {
         camera2.setFPS(30);
         rearLeftMotor.follow(frontLeftMotor);
         rearRightMotor.follow(frontRightMotor);
+        NavX.initializeNavX();
     }
     public SpeedControllerGroup getLeftMotors() {
         return leftMotors;

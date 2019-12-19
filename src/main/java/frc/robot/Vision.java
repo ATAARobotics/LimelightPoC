@@ -3,9 +3,11 @@ package frc.robot;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+
 public class Vision {
 
-    NetworkTable table;
+    private NetworkTable table;
+
     NetworkTableEntry tv;
     NetworkTableEntry tx;
     NetworkTableEntry ty;
@@ -14,15 +16,16 @@ public class Vision {
     NetworkTableEntry camMode;
 
     public Vision(){
-        table = NetworkTableInstance.getDefault().getTable("limelight");
+        table = NetworkTableInstance.getDefault().getTable("limelight-swat");
         tv = table.getEntry("tv");
         tx = table.getEntry("tx");
         ty = table.getEntry("ty");
         ta = table.getEntry("ta");
         ledMode =  table.getEntry("ledMode");
         camMode = table.getEntry("camMode");
+        
     }
-
+    
     public double getTv(){
         // Return Target Valid Status
         return tv.getDouble(2);
@@ -31,6 +34,8 @@ public class Vision {
     public double getTx(){
         // Return Target X
         return tx.getDouble(0);
+        //return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+
     }
 
     public double getTy(){
@@ -63,14 +68,26 @@ public class Vision {
         ledMode.setDouble(2);
     }
 
-    public void setDriverMode(){
-        // Set Camera to Driver Mode
-        camMode.setDouble(1);
+    // Switch LimeLight between different modes
+    public void setCameraMode(CMode mode) {
+        switch (mode) {
+            //Drive Mode
+            case Drive:
+                camMode.setDouble(1);
+                ledMode.setDouble(1);
+                break;
+            //Vision Mode
+            case Vision:
+                camMode.setDouble(0);
+                ledMode.setDouble(3);
+                break;
+        }
     }
+        
+}
 
-    public void setVisionMode(){
-        // Set Camera to Vision Mode
-        camMode.setDouble(0);
-    }
-
+// Different Camera Modes for setCameraMode method
+enum CMode{
+    Drive,
+    Vision;
 }
