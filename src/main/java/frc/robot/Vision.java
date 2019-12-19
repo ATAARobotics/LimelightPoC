@@ -69,8 +69,8 @@ public class Vision {
     }
 
     // Switch LimeLight between different modes
-    public void setCameraMode(CMode mode){
-        switch (mode){
+    public void setCameraMode(CMode mode) {
+        switch (mode) {
             //Drive Mode
             case Drive:
                 camMode.setDouble(1);
@@ -82,18 +82,6 @@ public class Vision {
                 ledMode.setDouble(3);
                 break;
         }
-    }
-
-    @Deprecated
-    public void setDriverMode(){
-        // Set Camera to Driver Mode
-        camMode.setDouble(1);
-    }
-
-    @Deprecated
-    public void setVisionMode(){
-        // Set Camera to Vision Mode
-        camMode.setDouble(0);
     }
         
 }
