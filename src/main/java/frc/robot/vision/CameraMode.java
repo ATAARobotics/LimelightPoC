@@ -1,7 +1,16 @@
 package frc.robot.vision;
 
-/** Different Camera Modes for setCameraMode method */
+/**
+ * LimeLight camera modes
+ * */
 public enum CameraMode {
+    /**
+     * Raises Camera Exposure, Disables Vision Processing, and Turns off Vision LED
+     */
     Drive,
-    Vision;
+
+    /**
+     * Lowers Camera Exposure, Enabled Vision Processing, and Turns on Vision LED
+     */
+    Vision
 }
