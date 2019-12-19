@@ -4,10 +4,11 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
+/** Class to communicate with the limelight via Network Tables. */
+
 public class LimeLight {
 
     private NetworkTable table;
-
     NetworkTableEntry tv;
     NetworkTableEntry tx;
     NetworkTableEntry ty;
@@ -16,6 +17,7 @@ public class LimeLight {
     NetworkTableEntry camMode;
 
     public LimeLight(){
+        /** Variable Declaration */
         table = NetworkTableInstance.getDefault().getTable("limelight-swat");
         tv = table.getEntry("tv");
         tx = table.getEntry("tx");
@@ -27,56 +29,55 @@ public class LimeLight {
     }
     
     public double getTv(){
-        // Return Target Valid Status
+        /** Return Target Valid Status */
         return tv.getDouble(2);
     }
 
     public double getTx(){
-        // Return Target X
+        /** Return Target X */
         return tx.getDouble(0);
-        //return NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
 
     }
 
     public double getTy(){
-        // Return Target Y
+        /** Return Target Y */
         return ty.getDouble(0);
     }
 
     public double getTa(){
-        // Return Target Area of Image
+        /** Return Target Area of Image */
         return ta.getDouble(0);
     }
 
     public void ledDefault(){
-        // Set LED to Pipeline Default
+        /** Set LED to Pipeline Default */
         ledMode.setDouble(0);
     }
 
     public void ledOn(){
-        // Force LED to ON
+        /** Force LED to ON */
         ledMode.setDouble(3);
     }
 
     public void ledOff(){
-        // Force LED to OFF
+        /** Force LED to OFF */
         ledMode.setDouble(1);
     }
 
     public void ledStrobe(){
-        // Force LED to Strobe
+        /** Force LED to Strobe */
         ledMode.setDouble(2);
     }
 
-    // Switch LimeLight between different modes
+    /** Switch LimeLight between different modes */
     public void setCameraMode(CameraMode mode) {
         switch (mode) {
-            //Drive Mode
+            /** Drive Mode */
             case Drive:
                 camMode.setDouble(1);
                 ledMode.setDouble(1);
                 break;
-            //Vision Mode
+            /** Vision Mode */
             case Vision:
                 camMode.setDouble(0);
                 ledMode.setDouble(3);

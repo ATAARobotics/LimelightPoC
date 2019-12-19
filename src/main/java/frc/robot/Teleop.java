@@ -29,7 +29,7 @@ public class Teleop {
     private double D = 0.05;
     private double tolerance = 0.2;
 
-    /*UltrasonicCode
+    /* UltrasonicCode
     private Ultrasonics ultrasonics;
     */
 
@@ -46,24 +46,25 @@ public class Teleop {
     public void teleopInit() {
         //intake.hatchOff();
         shooter.shooterInit();
-        //Sets up PID
+        /** Sets up PID */
         visionAlignPID = new PIDSubsystem("AlignPID", P, I, D) {
             @Override
             protected double returnPIDInput() {return limeLight.getTx(); }
             @Override
             protected void usePIDOutput(double output) { drive(0, output, true);
-                //DriverStation.reportWarning("Vision Running " + output, true);
             }
             @Override
             protected void initDefaultCommand() { }
             };
         
+        /** Sets the PID to the correct settings */
         visionAlignPID.setAbsoluteTolerance(tolerance);
         visionAlignPID.getPIDController().setContinuous(false);
         visionAlignPID.setOutputRange(-1,1);
         visionAlignPID.setInputRange(-27, 27);
-        // Disable Vision Processing on Limelight
+        /** Disable Vision Processing on Limelight */
         limeLight.setCameraMode(CameraMode.Drive);
+        /** Puts vision values to Shuffleboard */
         SmartDashboard.putNumber("Tolerance", tolerance);
         SmartDashboard.putNumber("Setpoint", visionAlignPID.getSetpoint());
     }
@@ -89,32 +90,31 @@ public class Teleop {
             }
             //TODO: Make it drive forward once aligned to target
 
-            // Vision Alignment
+            /** Vision Alignment */
             if(visionActive) {
 
-                // Disable Vision if Aligned
+                /** Disable Vision if Aligned */
                 if(PIDEnabled && visionAlignPID.onTarget()){
                     DriverStation.reportWarning("On target", false);
                     onTargetCounter++;
-                    // Once has been on target for 10 counts: Disable PID, Reset Camera Settings
+                    /** Once has been on target for 10 counts: Disable PID, Reset Camera Settings */
                     if (onTargetCounter > 10) {
                         stopAlignPID();
                         limeLight.setCameraMode(CameraMode.Drive);
                         visionActive = false;
                     }
                 } else {
-                    //onTargetCounter = 0;
                     DriverStation.reportWarning("Not on target", false);
-                    // Start PID if not started already, vision is enabled, and not aligned
+                    /** Start PID if not started already, vision is enabled, and not aligned */
                     if(!PIDEnabled){
                         limeLight.setCameraMode(CameraMode.Vision);
                         startAlignPID();
                         System.out.println("Vision Runs");
                     }
                 }
-            // If Vision is disabled normal driving and control operations. (AKA Mainly not vision code)
+            /** If Vision is disabled normal driving and control operations. */
             }else{
-                // If PID is enabled but vision is disabled stop vision alignment PID and reset camera settings
+                /** If PID is enabled but vision is disabled stop vision alignment PID and reset camera settings */
                 if(PIDEnabled){
                     stopAlignPID();
                     limeLight.setCameraMode(CameraMode.Drive);
@@ -217,21 +217,21 @@ public class Teleop {
     }
 
     // -- Vision: --
-    // Start alignment PID
-     private Double angleGoal;
+    /** Set up PID to begin aligning */
+    private Double angleGoal;
     public void startAlignPID() {
         visionAlignPID.setSetpoint(0.0);
         visionAlignPID.enable();
         PIDEnabled = true;
     }
 
-    // Stop Alignment PID
+    /** Halt PID alignment */
     public void stopAlignPID() {
         visionAlignPID.disable();
         PIDEnabled = false;
         
     }
-    // Update tolerance for Vision PID from shuffleboard
+    /** Update tolerance for Vision PID from shuffleboard */
     public void updateFromShuffleData(){
         tolerance = SmartDashboard.getNumber("Tolerance", tolerance);
     }
